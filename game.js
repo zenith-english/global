@@ -1,3 +1,36 @@
+// 국가 데이터 유틸리티 클래스
+class CountryUtils {
+    static getAllCountries() {
+        return countries; // countries.js에서 가져온 전역 변수
+    }
+    
+    static getTotalCount() {
+        return countries.length;
+    }
+    
+    static getRandomCountries(count, excludeCountry = null) {
+        let availableCountries = countries;
+        if (excludeCountry) {
+            availableCountries = countries.filter(country => country.code !== excludeCountry.code);
+        }
+        
+        const shuffled = [...availableCountries].sort(() => 0.5 - Math.random());
+        return shuffled.slice(0, count);
+    }
+    
+    static getFlagImageUrl(countryCode) {
+        return `https://flagcdn.com/w320/${countryCode.toLowerCase()}.png`;
+    }
+    
+    static getContinentStats() {
+        // 간단한 통계 반환
+        return {
+            total: countries.length,
+            loaded: true
+        };
+    }
+}
+
 // 화면 전환 함수들
 function showMainMenu() {
 const mainScreen = document.getElementById(‘mainScreen’);
