@@ -1100,101 +1100,129 @@ class FlagQuizGame {
 	
 	// 순위 결과 표시
 	showRankResult(rank, playerName) {
-		const modeNames = {
-			'flag-to-country': '국기 → 나라명',
-			'country-to-flag': '나라명 → 국기',
-			'capital-easy': '국기+나라 → 수도',
-			'capital-hard': '국기 → 수도',
-			'capital-to-flag': '수도 → 국기',
-			'capital-easy-yuli': '짜국이: 국기+나라 → 수도',
-			'capital-hard-yuli': '짜국이: 국기 → 수도',
-			'capital-to-flag-yuli': '짜국이: 수도 → 국기'
-		};
-		
-		const modeName = modeNames[this.currentMode];
-		let rankEmoji = '';
-		let rankMessage = '';
-		
-		if (rank === 1) {
-			rankEmoji = '🥇';
-			rankMessage = '축하합니다! 1등입니다!';
-		} else if (rank === 2) {
-			rankEmoji = '🥈';
-			rankMessage = '대단해요! 2등입니다!';
-		} else if (rank === 3) {
-			rankEmoji = '🥉';
-			rankMessage = '잘했어요! 3등입니다!';
-		} else if (rank <= 5) {
-			rankEmoji = '🏆';
-			rankMessage = `훌륭해요! ${rank}등입니다!`;
-		} else if (rank <= 10) {
-			rankEmoji = '⭐';
-			rankMessage = `좋아요! ${rank}등입니다!`;
-		} else {
-			rankEmoji = '✨';
-			rankMessage = `${rank}등입니다! 계속 도전하세요!`;
-		}
-		
-		// 팝업 생성
-		const popup = document.createElement('div');
-		popup.style.cssText = `
-			position: fixed;
-			top: 50%;
-			left: 50%;
-			transform: translate(-50%, -50%);
-			background: linear-gradient(135deg, #667eea, #764ba2);
-			color: white;
-			padding: 40px;
-			border-radius: 25px;
-			box-shadow: 0 20px 60px rgba(0,0,0,0.4);
-			z-index: 10000;
-			text-align: center;
-			min-width: 350px;
-			animation: bounceIn 0.6s ease-out;
-		`;
-		
-		popup.innerHTML = `
-			<div style="font-size: 4rem; margin-bottom: 20px;">${rankEmoji}</div>
-			<h2 style="font-size: 2rem; margin-bottom: 15px; font-family: 'Jua', sans-serif;">
-				${rankMessage}
-			</h2>
-			<div style="font-size: 1.2rem; margin-bottom: 10px;">
-				<strong>${playerName}</strong>님의 기록이
-			</div>
-			<div style="font-size: 1.1rem; margin-bottom: 20px; opacity: 0.9;">
-				[${modeName}] 모드에서<br>
-				<strong style="font-size: 1.3rem; color: #ffeaa7;">${rank}위</strong>로 등록되었습니다!
-			</div>
-			<button id="closeRankPopup" style="
-				background: rgba(255,255,255,0.2);
-				border: 2px solid white;
-				color: white;
-				padding: 12px 30px;
-				border-radius: 20px;
-				font-size: 1.1rem;
-				font-weight: 600;
-				cursor: pointer;
-				transition: all 0.3s ease;
-			">확인</button>
-		`;
-		
-		document.body.appendChild(popup);
-		
-		// 닫기 버튼 이벤트
-		document.getElementById('closeRankPopup').addEventListener('click', () => {
-			popup.style.animation = 'fadeOut 0.3s ease-out';
-			setTimeout(() => popup.remove(), 300);
-		});
-		
-		// 5초 후 자동으로 닫기
-		setTimeout(() => {
-			if (document.body.contains(popup)) {
-				popup.style.animation = 'fadeOut 0.3s ease-out';
-				setTimeout(() => popup.remove(), 300);
-			}
-		}, 5000);
+	    const modeNames = {
+	        'flag-to-country': '국기 → 나라명',
+	        'country-to-flag': '나라명 → 국기',
+	        'capital-easy': '국기+나라 → 수도',
+	        'capital-hard': '국기 → 수도',
+	        'capital-to-flag': '수도 → 국기',
+	        'capital-easy-yuli': '짜국이: 국기+나라 → 수도',
+	        'capital-hard-yuli': '짜국이: 국기 → 수도',
+	        'capital-to-flag-yuli': '짜국이: 수도 → 국기'
+	    };
+	    
+	    const modeName = modeNames[this.currentMode];
+	    let rankEmoji = '';
+	    let rankMessage = '';
+	    
+	    if (rank === 1) {
+	        rankEmoji = '🥇';
+	        rankMessage = '축하합니다! 1등입니다!';
+	    } else if (rank === 2) {
+	        rankEmoji = '🥈';
+	        rankMessage = '대단해요! 2등입니다!';
+	    } else if (rank === 3) {
+	        rankEmoji = '🥉';
+	        rankMessage = '잘했어요! 3등입니다!';
+	    } else if (rank <= 5) {
+	        rankEmoji = '🏆';
+	        rankMessage = `훌륭해요! ${rank}등입니다!`;
+	    } else if (rank <= 10) {
+	        rankEmoji = '⭐';
+	        rankMessage = `좋아요! ${rank}등입니다!`;
+	    } else {
+	        rankEmoji = '✨';
+	        rankMessage = `${rank}등입니다! 계속 도전하세요!`;
+	    }
+	    
+	    // 오버레이 생성
+	    const overlay = document.createElement('div');
+	    overlay.style.cssText = `
+	        position: fixed;
+	        top: 0;
+	        left: 0;
+	        right: 0;
+	        bottom: 0;
+	        background: rgba(0, 0, 0, 0.7);
+	        z-index: 9999;
+	        display: flex;
+	        align-items: center;
+	        justify-content: center;
+	        padding: 20px;
+	        opacity: 0;
+	        transition: opacity 0.3s ease-in;
+	    `;
+	    
+	    // 팝업 생성
+	    const popup = document.createElement('div');
+	    popup.style.cssText = `
+	        background: linear-gradient(135deg, #667eea, #764ba2);
+	        color: white;
+	        padding: 30px;
+	        border-radius: 25px;
+	        box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+	        text-align: center;
+	        width: 90%;
+	        max-width: 400px;
+	        transform: scale(0.8);
+	        transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+	    `;
+	    
+	    popup.innerHTML = `
+	        <div style="font-size: clamp(3rem, 10vw, 4rem); margin-bottom: 20px;">${rankEmoji}</div>
+	        <h2 style="font-size: clamp(1.5rem, 5vw, 2rem); margin-bottom: 15px; font-family: 'Jua', sans-serif;">
+	            ${rankMessage}
+	        </h2>
+	        <div style="font-size: clamp(1rem, 3vw, 1.2rem); margin-bottom: 10px;">
+	            <strong>${playerName}</strong>님의 기록이
+	        </div>
+	        <div style="font-size: clamp(0.9rem, 2.5vw, 1.1rem); margin-bottom: 20px; opacity: 0.9;">
+	            [${modeName}] 모드에서<br>
+	            <strong style="font-size: clamp(1.1rem, 3vw, 1.3rem); color: #ffeaa7;">${rank}위</strong>로 등록되었습니다!
+	        </div>
+	        <button id="closeRankPopup" style="
+	            background: rgba(255,255,255,0.2);
+	            border: 2px solid white;
+	            color: white;
+	            padding: 12px 30px;
+	            border-radius: 20px;
+	            font-size: clamp(1rem, 3vw, 1.1rem);
+	            font-weight: 600;
+	            cursor: pointer;
+	            transition: all 0.3s ease;
+	            min-width: 100px;
+	        ">확인</button>
+	    `;
+	    
+	    overlay.appendChild(popup);
+	    document.body.appendChild(overlay);
+	    
+	    // 애니메이션 시작
+	    requestAnimationFrame(() => {
+	        overlay.style.opacity = '1';
+	        popup.style.transform = 'scale(1)';
+	    });
+	    
+	    // 닫기 버튼 이벤트
+	    const closeBtn = document.getElementById('closeRankPopup');
+	    closeBtn.addEventListener('click', () => {
+	        overlay.style.opacity = '0';
+	        popup.style.transform = 'scale(0.8)';
+	        setTimeout(() => overlay.remove(), 300);
+	    });
+	    
+	    // 버튼 호버 효과
+	    closeBtn.addEventListener('mouseenter', () => {
+	        closeBtn.style.background = 'rgba(255,255,255,0.3)';
+	        closeBtn.style.transform = 'scale(1.05)';
+	    });
+	    
+	    closeBtn.addEventListener('mouseleave', () => {
+	        closeBtn.style.background = 'rgba(255,255,255,0.2)';
+	        closeBtn.style.transform = 'scale(1)';
+	    });
 	}
-
+		
     // 게임 재시작
     restartGame() {
         this.startNewGame(this.currentMode);
